@@ -9,3 +9,7 @@ The camera stream for 3D printer.
 - [ ] 3D print the case: can pivot
 - [ ] Build website
 - [ ] Deep sleep to save power, wakeup by http request
+
+## References
+- https://github.com/me-no-dev/ESPAsyncWebServer/issues/647
+
