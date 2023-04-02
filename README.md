@@ -4,7 +4,7 @@
 The camera stream for 3D printer.
 
 ## TODO
-- [ ] OTA upload
+- [x] OTA upload
 - [ ] Save WiFi credentials in ESP32's filesystem
 - [ ] 3D print the case: can pivot
 - [ ] Build website
