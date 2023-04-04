@@ -225,6 +225,577 @@ void streamJpg(AsyncWebServerRequest *request) {
   request->send(response);
 }
 
+// Website
+const char index_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #181818;
+    color: #EFEFEF;
+    font-size: 16px
+}
+
+h2 {
+    font-size: 18px
+}
+
+section.main {
+    display: flex
+}
+
+#menu,
+section.main {
+    flex-direction: column
+}
+
+#menu {
+    display: none;
+    flex-wrap: nowrap;
+    min-width: 340px;
+    background: #363636;
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: -10px;
+    margin-right: 10px;
+}
+
+#content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch
+}
+
+figure {
+    padding: 0px;
+    margin: 0;
+    -webkit-margin-before: 0;
+    margin-block-start: 0;
+    -webkit-margin-after: 0;
+    margin-block-end: 0;
+    -webkit-margin-start: 0;
+    margin-inline-start: 0;
+    -webkit-margin-end: 0;
+    margin-inline-end: 0
+}
+
+figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+@media (min-width: 800px) and (orientation:landscape) {
+    #content {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch
+    }
+
+    figure img {
+        display: block;
+        max-width: 100%;
+        max-height: calc(100vh - 40px);
+        width: auto;
+        height: auto
+    }
+
+    figure {
+        padding: 0 0 0 0px;
+        margin: 0;
+        -webkit-margin-before: 0;
+        margin-block-start: 0;
+        -webkit-margin-after: 0;
+        margin-block-end: 0;
+        -webkit-margin-start: 0;
+        margin-inline-start: 0;
+        -webkit-margin-end: 0;
+        margin-inline-end: 0
+    }
+}
+
+section#buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    /* justify-content: space-between */
+    justify-content: center
+}
+
+#nav-toggle {
+    cursor: pointer;
+    display: block
+}
+
+#nav-toggle-cb {
+    outline: 0;
+    opacity: 0;
+    width: 0;
+    height: 0
+}
+
+#nav-toggle-cb:checked+#menu {
+    display: flex
+}
+
+.input-group {
+    display: flex;
+    flex-wrap: nowrap;
+    line-height: 22px;
+    margin: 5px 0
+}
+
+.input-group>label {
+    display: inline-block;
+    padding-right: 10px;
+    min-width: 47%
+}
+
+.input-group input,
+.input-group select {
+    flex-grow: 1
+}
+
+.range-max,
+.range-min {
+    display: inline-block;
+    padding: 0 5px
+}
+
+button,
+.button {
+    display: block;
+    margin: 5px;
+    padding: 0 12px;
+    border: 0;
+    line-height: 28px;
+    cursor: pointer;
+    color: #fff;
+    background: #ff3034;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: 0
+}
+
+.save {
+    position: absolute;
+    right: 25px;
+    top: 0px;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 4px;
+    text-decoration: none;
+    cursor: pointer
+}
+
+button:hover {
+    background: #ff494d
+}
+
+button:active {
+    background: #f21c21
+}
+
+button.disabled {
+    cursor: default;
+    background: #a0a0a0
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 22px;
+    background: #363636;
+    cursor: pointer;
+    margin: 0
+}
+
+input[type=range]:focus {
+    outline: 0
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 2px;
+    cursor: pointer;
+    background: #EFEFEF;
+    border-radius: 0;
+    border: 0 solid #EFEFEF
+}
+
+input[type=range]::-webkit-slider-thumb {
+    border: 1px solid rgba(0, 0, 30, 0);
+    height: 22px;
+    width: 22px;
+    border-radius: 50px;
+    background: #ff3034;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -11.5px
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #EFEFEF
+}
+
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 2px;
+    cursor: pointer;
+    background: #EFEFEF;
+    border-radius: 0;
+    border: 0 solid #EFEFEF
+}
+
+input[type=range]::-moz-range-thumb {
+    border: 1px solid rgba(0, 0, 30, 0);
+    height: 22px;
+    width: 22px;
+    border-radius: 50px;
+    background: #ff3034;
+    cursor: pointer
+}
+
+input[type=range]::-ms-track {
+    width: 100%;
+    height: 2px;
+    cursor: pointer;
+    background: 0 0;
+    border-color: transparent;
+    color: transparent
+}
+
+input[type=range]::-ms-fill-lower {
+    background: #EFEFEF;
+    border: 0 solid #EFEFEF;
+    border-radius: 0
+}
+
+input[type=range]::-ms-fill-upper {
+    background: #EFEFEF;
+    border: 0 solid #EFEFEF;
+    border-radius: 0
+}
+
+input[type=range]::-ms-thumb {
+    border: 1px solid rgba(0, 0, 30, 0);
+    height: 22px;
+    width: 22px;
+    border-radius: 50px;
+    background: #ff3034;
+    cursor: pointer;
+    height: 2px
+}
+
+input[type=range]:focus::-ms-fill-lower {
+    background: #EFEFEF
+}
+
+input[type=range]:focus::-ms-fill-upper {
+    background: #363636
+}
+
+.switch {
+    display: block;
+    position: relative;
+    line-height: 22px;
+    font-size: 16px;
+    height: 22px
+}
+
+.switch input {
+    outline: 0;
+    opacity: 0;
+    width: 0;
+    height: 0
+}
+
+.slider {
+    width: 50px;
+    height: 22px;
+    border-radius: 22px;
+    cursor: pointer;
+    background-color: grey
+}
+
+.slider,
+.slider:before {
+    display: inline-block;
+    transition: .4s
+}
+
+.slider:before {
+    position: relative;
+    content: "";
+    border-radius: 50%;
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    top: 3px;
+    background-color: #fff
+}
+
+input:checked+.slider {
+    background-color: #ff3034
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    transform: translateX(26px)
+}
+
+select {
+    border: 1px solid #363636;
+    font-size: 14px;
+    height: 22px;
+    outline: 0;
+    border-radius: 5px
+}
+
+.image-container {
+    position: relative;
+    min-width: 160px
+}
+
+.close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background: #ff3034;
+    width: 16px;
+    height: 16px;
+    border-radius: 100px;
+    color: #fff;
+    text-align: center;
+    line-height: 18px;
+    cursor: pointer
+}
+
+.hidden {
+    display: none
+}
+
+input[type=text] {
+    border: 1px solid #363636;
+    font-size: 14px;
+    height: 20px;
+    margin: 1px;
+    outline: 0;
+    border-radius: 5px
+}
+
+.inline-button {
+    line-height: 20px;
+    margin: 2px;
+    padding: 1px 4px 2px 4px;
+}
+
+label.toggle-section-label {
+    cursor: pointer;
+    display: block
+}
+
+input.toggle-section-button {
+    outline: 0;
+    opacity: 0;
+    width: 0;
+    height: 0
+}
+
+input.toggle-section-button:checked+section.toggle-section {
+    display: none
+}
+
+  </style>
+</head>
+
+<body>
+  <section class="main">
+    <div id="logo">
+      <label for="nav-toggle-cb" id="nav-toggle">&#9776;&nbsp;&nbsp;Settings</label>
+    </div>
+    <div id="content">
+      <div id="sidebar">
+        <!-- <input type="checkbox" id="nav-toggle-cb" checked="checked"> -->
+        <!-- Hide sidebar when loaded -->
+        <input type="checkbox" id="nav-toggle-cb">
+        <nav id="menu">
+
+
+          <div class="input-group" id="framesize-group">
+            <label for="framesize">Resolution</label>
+            <select id="framesize" class="default-action">
+              <!-- 2MP -->
+              <!-- <option value="13">UXGA(1600x1200)</option>
+              <option value="12">SXGA(1280x1024)</option>
+              <option value="11">HD(1280x720)</option>
+              <option value="10">XGA(1024x768)</option> -->
+              <option value="9">SVGA(800x600)</option>
+              <option value="8">VGA(640x480)</option>
+              <option value="7">HVGA(480x320)</option>
+              <option value="6">CIF(400x296)</option>
+              <option value="5">QVGA(320x240)</option>
+              <!-- <option value="4">240x240</option>
+              <option value="3">HQVGA(240x176)</option>
+              <option value="2">QCIF(176x144)</option>
+              <option value="1">QQVGA(160x120)</option>
+              <option value="0">96x96</option> -->
+            </select>
+          </div>
+
+          <div class="input-group" id="quality-group">
+            <label for="quality">Quality</label>
+            <div class="range-min">4</div>
+            <input type="range" id="quality" min="4" max="63" value="10" class="default-action">
+            <div class="range-max">63</div>
+          </div>
+
+          <div class="input-group" id="brightness-group">
+            <label for="brightness">Brightness</label>
+            <div class="range-min">-2</div>
+            <input type="range" id="brightness" min="-2" max="2" value="0" class="default-action">
+            <div class="range-max">2</div>
+          </div>
+
+
+          <!-- Toggle stream -->
+          <section id="buttons">
+            <button id="toggle-stream">Start Stream</button>
+          </section>
+
+
+          <div style="margin-top: 8px;">
+          </div>
+          <hr style="width:100%">
+          <label for="nav-toggle-2640pll" class="toggle-section-label">&#9776;&nbsp;&nbsp;Advanced
+            Settings</label><input type="checkbox" id="nav-toggle-2640pll" class="hidden toggle-section-button"
+            checked="checked">
+          <section class="toggle-section">
+
+            <div class="input-group" id="aec_value-group">
+              <label for="aec_value">Exposure</label>
+              <div class="range-min">0</div>
+              <input type="range" id="aec_value" min="0" max="1200" value="204" class="default-action">
+              <div class="range-max">1200</div>
+            </div>
+
+            <section id="xclk-section" class="nothidden">
+              <div class="input-group" id="set-xclk-group">
+                <label for="set-xclk">XCLK MHz</label>
+                <div class="text">
+                  <input id="xclk" type="text" minlength="1" maxlength="2" size="2" value="20">
+                </div>
+                <button class="inline-button" id="set-xclk">Set</button>
+              </div>
+            </section>
+
+            <div class="input-group" id="awb-group">
+              <label for="awb">AWB</label>
+              <div class="switch">
+                <input id="awb" type="checkbox" class="default-action" checked="checked">
+                <label class="slider" for="awb"></label>
+              </div>
+            </div>
+
+            <div class="input-group" id="aec-group">
+              <label for="aec">AEC SENSOR</label>
+              <div class="switch">
+                <input id="aec" type="checkbox" class="default-action" checked="checked">
+                <label class="slider" for="aec"></label>
+              </div>
+            </div>
+
+            <div class="input-group" id="aec2-group">
+              <label for="aec2">AEC DSP</label>
+              <div class="switch">
+                <input id="aec2" type="checkbox" class="default-action" checked="checked">
+                <label class="slider" for="aec2"></label>
+              </div>
+            </div>
+
+            <div class="input-group" id="agc-group">
+              <label for="agc">AGC</label>
+              <div class="switch">
+                <input id="agc" type="checkbox" class="default-action" checked="checked">
+                <label class="slider" for="agc"></label>
+              </div>
+            </div>
+
+            <div class="input-group" id="wpc-group">
+              <label for="wpc">WPC</label>
+              <div class="switch">
+                <input id="wpc" type="checkbox" class="default-action" checked="checked">
+                <label class="slider" for="wpc"></label>
+              </div>
+            </div>
+
+            <div class="input-group" id="led-group">
+              <label for="led_intensity">LED Intensity</label>
+              <div class="range-min">0</div>
+              <input type="range" id="led_intensity" min="0" max="255" value="0" class="default-action">
+              <div class="range-max">255</div>
+            </div>
+
+            <div class="input-group" id="ae_level-group">
+              <label for="ae_level">AE Level</label>
+              <div class="range-min">-2</div>
+              <input type="range" id="ae_level" min="-2" max="2" value="0" class="default-action">
+              <div class="range-max">2</div>
+            </div>
+          </section>
+
+          <div class="input-group hidden" id="agc_gain-group">
+            <label for="agc_gain">Gain</label>
+            <div class="range-min">1x</div>
+            <input type="range" id="agc_gain" min="0" max="30" value="5" class="default-action">
+            <div class="range-max">31x</div>
+          </div>
+
+        </nav>
+      </div>
+
+      <figure>
+        <div id="stream-container" class="image-container ">
+          <img id="stream" src="/stream" crossorigin>
+        </div>
+      </figure>
+    </div>
+  </section>
+  
+  <script>
+    window.addEventListener('load', onLoad)
+    function onLoad(event) {
+      baseHost = document.location.origin
+      streamUrl = baseHost
+
+      view = document.getElementById('stream')
+      viewContainer = document.getElementById('stream-container')
+
+      initButton();
+    }
+    function initButton() {
+      document.getElementById('toggle-stream').addEventListener('click', toggle_stream)
+    }
+    function toggle_stream(){
+      console.log("Toggle clicked")
+      console.log(streamUrl)
+
+      view.src = `${streamUrl}/stream`
+    }
+  </script>
+  
+</body>
+</html>
+)rawliteral";
+
 void setup() {
 
   Serial.begin(115200);
@@ -278,8 +849,13 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   // Server config
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(200, "text/plain", "Hello, world");
+  // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+  //   request->send(200, "text/plain", "Hello, world");
+  // });
+
+  // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/html", index_html);
   });
 
   server.on("/status", HTTP_GET, getCameraStatus);
