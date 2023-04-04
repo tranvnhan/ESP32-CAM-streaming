@@ -8,6 +8,7 @@ The camera stream for 3D printer.
 - [ ] Save WiFi credentials in ESP32's filesystem
 - [ ] 3D print the case: can pivot
 - [ ] Build website
+  - [ ] Can adjust stream settings via sidebar
 - [ ] Deep sleep to save power, wakeup by http request
 - [x] Async stream
 
