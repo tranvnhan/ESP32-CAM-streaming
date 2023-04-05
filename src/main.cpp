@@ -60,6 +60,7 @@ private:
 
 public:
   AsyncJpegStreamResponse() {
+    // log_printf("New client\n");
     _callback = nullptr;
     _code = 200;
     _contentLength = 0;
@@ -73,6 +74,7 @@ public:
     memset(&_frame, 0, sizeof(camera_frame_t));
   }
   ~AsyncJpegStreamResponse() {
+    // log_printf("Client exit\n");
     if (_frame.fb) {
       if (_frame.fb->format != PIXFORMAT_JPEG) {
         free(_jpg_buf);
@@ -93,8 +95,8 @@ public:
       if (index && _frame.fb) {
         uint64_t end = (uint64_t)micros();
         int fp = (end - lastAsyncRequest) / 1000;
-        log_printf("Size: %uKB, Time: %ums (%.1ffps)\n", _jpg_buf_len / 1024,
-                   fp);
+        // log_printf("Size: %uKB, Time: %ums (%.1ffps)\n", _jpg_buf_len / 1024,
+        //            fp);
         lastAsyncRequest = end;
         if (_frame.fb->format != PIXFORMAT_JPEG) {
           free(_jpg_buf);
