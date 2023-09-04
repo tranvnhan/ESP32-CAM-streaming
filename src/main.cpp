@@ -1,14 +1,15 @@
-#include <AsyncElegantOTA.h>
-#include <AsyncTCP.h>
+#include <WiFiManager.h>      // define before <WiFi.h>
 #include <ESPAsyncWebServer.h>
-#include <WiFi.h>
 #include <secrets.h>
 #include <LittleFS.h>
+#include <WiFi.h>
 #include <esp_log.h>
 #include <camera_utils.h>
 
 const char LITTLE_FS_TAG[] = "LITTLE_FS";
 const char WIFI_TAG[] = "WIFI";
+
+WiFiManager wm;
 
 AsyncWebServer server(80);
 
@@ -23,13 +24,16 @@ void setup() {
   cameraInit();
 
   // WiFi initialization
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(SSID, PASSWORD);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    ESP_LOGI(WIFI_TAG, "Connecting to: %s", SSID);
+  WiFi.mode(WIFI_STA);  // wifi station mode
+  bool res;
+  res = wm.autoConnect("AutoConnectAP","password");
+  if(!res) {
+    Serial.println("Failed to connect");
+    // ESP.restart();
+  } 
+  else {
+      Serial.println("connected...yeey :)");
   }
-  ESP_LOGI(WIFI_TAG, "IP Address: %s", WiFi.localIP().toString());
 
   // Initialize LittleFS
   if (!LittleFS.begin(true)) {
@@ -50,7 +54,6 @@ void setup() {
   });
   server.onNotFound(notFound);
 
-  AsyncElegantOTA.begin(&server); // enable OTA update
   server.begin();
 }
 
