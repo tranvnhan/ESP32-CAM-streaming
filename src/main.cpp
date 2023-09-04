@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <AsyncElegantOTA.h>;
+#include <AsyncElegantOTA.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <WiFi.h>
@@ -864,8 +864,7 @@ void setup() {
   server.on("/stream", HTTP_GET, streamJpg);
   server.onNotFound(notFound);
 
-  AsyncElegantOTA.begin(&server, OTA_USERNAME,
-                        OTA_PASSWORD); // enable OTA update
+  AsyncElegantOTA.begin(&server); // enable OTA update
   server.begin();
 }
 
