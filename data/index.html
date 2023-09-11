@@ -162,27 +162,7 @@
     </div>
   </section>
   
-  <script>
-    window.addEventListener('load', onLoad)
-    function onLoad(event) {
-      baseHost = document.location.origin
-      streamUrl = baseHost
-
-      view = document.getElementById('stream')
-      viewContainer = document.getElementById('stream-container')
-
-      initButton();
-    }
-    function initButton() {
-      document.getElementById('toggle-stream').addEventListener('click', toggle_stream)
-    }
-    function toggle_stream(){
-      console.log("Toggle clicked")
-      console.log(streamUrl)
-
-      view.src = `${streamUrl}/stream`
-    }
-  </script>
+  <script src="script.js"></script>
   
 </body>
 </html>

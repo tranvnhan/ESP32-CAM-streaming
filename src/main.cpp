@@ -8,10 +8,17 @@
 
 const char LITTLE_FS_TAG[] = "LITTLE_FS";
 const char WIFI_TAG[] = "WIFI";
+const char WEBSOCKET_TAG[] = "WEBSOCKET";
 
 WiFiManager wm;
 
+/* Function prototypes */
+void initWebSocket();
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
+             AwsEventType type, void *arg, uint8_t *data, size_t len);
+
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
 
 void notFound(AsyncWebServerRequest *request) {
   request->send(404, "text/plain", "Not found");
@@ -41,6 +48,8 @@ void setup() {
     return;
   }
 
+  initWebSocket();
+
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(LittleFS, "/index.html", String(), false);
@@ -58,3 +67,28 @@ void setup() {
 }
 
 void loop() {}
+
+void initWebSocket() {
+  ws.onEvent(onEvent);
+  server.addHandler(&ws);
+}
+
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
+             AwsEventType type, void *arg, uint8_t *data, size_t len) {
+  switch (type) {
+  case WS_EVT_CONNECT:
+    ESP_LOGI(WEBSOCKET_TAG, "WebSocket client #%u connected from %s",
+             client->id(), client->remoteIP().toString().c_str());
+    break;
+  case WS_EVT_DISCONNECT:
+    ESP_LOGI(WEBSOCKET_TAG, "WebSocket client #%u disconnected",
+             client->id());
+    break;
+  case WS_EVT_DATA:
+    // handleWebSocketMessage(arg, data, len);
+    break;
+  case WS_EVT_PONG:
+  case WS_EVT_ERROR:
+    break;
+  }
+}
