@@ -10,6 +10,9 @@ const char LITTLE_FS_TAG[] = "LITTLE_FS";
 const char WIFI_TAG[] = "WIFI";
 const char WEBSOCKET_TAG[] = "WEBSOCKET";
 
+// To keep track of number of connected clients
+uint8_t numberConnectedClients = 0;
+
 WiFiManager wm;
 
 /* Function prototypes */
@@ -28,7 +31,6 @@ void setup() {
 
   Serial.begin(115200);
 
-  cameraInit();
 
   // WiFi initialization
   WiFi.mode(WIFI_STA);  // wifi station mode
@@ -79,10 +81,23 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
   case WS_EVT_CONNECT:
     ESP_LOGI(WEBSOCKET_TAG, "WebSocket client #%u connected from %s",
              client->id(), client->remoteIP().toString().c_str());
+    numberConnectedClients++;
+    // Only init the camera module when the 1st client is connected,
+    // subsequent clients do not require re-initialization
+    if (numberConnectedClients == 1) {
+      cameraInit();
+    }
+
     break;
   case WS_EVT_DISCONNECT:
     ESP_LOGI(WEBSOCKET_TAG, "WebSocket client #%u disconnected",
              client->id());
+    numberConnectedClients--;
+
+    // When no more clients are connected, it's better to deinitialize the camera object and free the resources
+    if (numberConnectedClients == 0) {
+      cameraStop();
+    }
     break;
   case WS_EVT_DATA:
     // handleWebSocketMessage(arg, data, len);

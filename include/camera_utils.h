@@ -45,5 +45,6 @@ typedef struct {
 
 void streamJpg(AsyncWebServerRequest *request);
 void cameraInit();
+void cameraStop();
 
 #endif /* A4EC03FC_88BF_428E_8465_FA8B3C42AC20 */

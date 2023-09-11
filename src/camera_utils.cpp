@@ -209,6 +209,7 @@ void cameraInit(){
   config.frame_size = FRAMESIZE_VGA;
   config.jpeg_quality = 12;
   config.fb_count = 2;
+  config.fb_location = CAMERA_FB_IN_PSRAM;
 
   // Camera init
   esp_err_t err = esp_camera_init(&config);
@@ -218,4 +219,12 @@ void cameraInit(){
     ESP.restart();
   }
   ESP_LOGI(TAG, "Camera init success");
+}
+
+void cameraStop() {
+  esp_err_t err = esp_camera_deinit();
+  if (err != ESP_OK) {
+    ESP_LOGE(TAG, "Camera stop failed with error 0x%x", err);
+  }
+  ESP_LOGI(TAG, "Camera stop success");
 }
